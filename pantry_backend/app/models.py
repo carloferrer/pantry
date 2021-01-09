@@ -1,7 +1,7 @@
 from django.db import models
 
 class Consumable(models.Model):
-    name = models.CharField()
+    name = models.CharField(max_length=48)
     description = models.TextField()
     count = models.IntegerField()
     expiry = models.DateField()
