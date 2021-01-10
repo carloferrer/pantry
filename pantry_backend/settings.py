@@ -40,6 +40,10 @@ INSTALLED_APPS = [
     'pantry_backend.app',
 ]
 
+FIXTURE_DIRS = (
+    './app/fixtures',
+)
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

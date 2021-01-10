@@ -1,0 +1,42 @@
+[
+    {
+        "model": "app.location",
+        "pk": 1,
+        "fields": {
+            "name": "fridge",
+            "description": "left of coat closet; right of stove"
+        }
+    },
+    {
+        "model": "app.location",
+        "pk": 2,
+        "fields": {
+            "name": "snack corner",
+            "description": "left of stove; below counter; opposite sink"
+        }
+    },
+    {
+        "model": "app.location",
+        "pk": 3,
+        "fields": {
+            "name": "spice zone",
+            "description": "one level above stove; gull-wing hinge; opposite sink"
+        }
+    },
+    {
+        "model": "app.location",
+        "pk": 4,
+        "fields": {
+            "name": "closet pantry",
+            "description": "inside coat closet, left; right of fridge"
+        }
+    },
+    {
+        "model": "app.location",
+        "pk": 5,
+        "fields": {
+            "name": "microwave drawer",
+            "description": "under microwave; left of snack corner"
+        }
+    }
+]
