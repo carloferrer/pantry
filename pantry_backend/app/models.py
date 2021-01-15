@@ -21,7 +21,7 @@ class Consumable(models.Model):
     def __str__(self):
         return self.name
 
-    def get_expiry_human_date(self):
+    def get_human_date_expiry(self):
         return naturalday(self.expiry)
 
     def get_days_to_expiry(self):
