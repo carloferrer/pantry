@@ -20,7 +20,7 @@ class ConsumableQuerySet(models.QuerySet):
 
     # Accepts YYYY-mm-dd, e.g., 2020-01-01
     def get_expires_by_date(self, date):
-        converted_date = datetime.strptime(date, "%Y-%m-%d")
+        converted_date = datetime.strptime(date, '%Y-%m-%d')
         return self.filter(expiry__lte=date)
 
 
