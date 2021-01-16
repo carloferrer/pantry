@@ -1,6 +1,7 @@
 from django.db import models
-from django.contrib.humanize.templatetags.humanize import naturalday
+from datetime import datetime
 from django.utils import timezone
+from django.contrib.humanize.templatetags.humanize import naturalday
 
 
 class Location(models.Model):
@@ -16,6 +17,11 @@ class ConsumableQuerySet(models.QuerySet):
         now = timezone.now().date()
         expiry_threshold = now + timezone.timedelta(days)
         return self.filter(expiry__lte=expiry_threshold)
+
+    # Accepts YYYY-mm-dd, e.g., 2020-01-01
+    def get_expires_by_date(self, date):
+        converted_date = datetime.strptime(date, "%Y-%m-%d")
+        return self.filter(expiry__lte=date)
 
 
 class ConsumableManager(models.Manager):

@@ -68,3 +68,33 @@ class TestConsumableQuerySetMethods(TestCase):
 
         for test_assertion in test_assertions:
             self.assertEqual(test_assertion["result"], test_assertion["expected"])
+
+    @patch('django.utils.timezone.now')
+    def test_get_expires_by_date(self, mock_now):
+        mock_now.return_value = datetime(2021, 1, 1)
+        get_queryset = Consumable.consumables.get_queryset
+        get_expires_by_date = get_queryset().get_expires_by_date
+
+        test_assertions = [
+            {
+                "result": [ *get_expires_by_date("2021-01-01") ],
+                "expected": [
+                    get_queryset().get(name="milk")
+                ]
+            },
+            {
+                "result": [ *get_expires_by_date("2021-01-11") ],
+                "expected": [
+                    get_queryset().get(name="milk"),
+                    get_queryset().get(name="eggs")
+                ]
+            },
+            {
+                "result": [ *get_expires_by_date("2021-01-21") ],
+                "expected": [
+                    get_queryset().get(name="milk"),
+                    get_queryset().get(name="eggs"),
+                    get_queryset().get(name="bread")
+                ]
+            }
+        ]
