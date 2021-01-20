@@ -27,6 +27,7 @@ class TestConsumableMethods(TestCase):
 
 class TestConsumableQuerySetMethods(TestCase):
     get_queryset = Consumable.consumables.get_queryset
+    filter_consumables = get_queryset().filter
 
     def setUp(self):
         mock_consumables = [
@@ -51,11 +52,11 @@ class TestConsumableQuerySetMethods(TestCase):
             },
             {
                 'result': [ *get_expires_in_days(10) ],
-                'expected': [ *self.get_queryset().filter(name__in=('milk', 'eggs')) ]
+                'expected': [ *self.filter_consumables(name__in=('milk', 'eggs')) ]
             },
             {
                 'result': [ *get_expires_in_days(20) ],
-                'expected': [ *self.get_queryset().filter(name__in=('milk', 'eggs', 'bread')) ]
+                'expected': [ *self.filter_consumables(name__in=('milk', 'eggs', 'bread')) ]
             }
         ]
 
@@ -75,11 +76,11 @@ class TestConsumableQuerySetMethods(TestCase):
             },
             {
                 'result': [ *get_expires_by_date('2021-01-11') ],
-                'expected': [ *self.get_queryset().filter(name__in=('milk', 'eggs')) ]
+                'expected': [ *self.filter_consumables(name__in=('milk', 'eggs')) ]
             },
             {
                 'result': [ *get_expires_by_date('2021-01-21') ],
-                'expected': [ *self.get_queryset().filter(name__in=('milk', 'eggs', 'bread')) ]
+                'expected': [ *self.filter_consumables(name__in=('milk', 'eggs', 'bread')) ]
             }
         ]
 
@@ -98,11 +99,11 @@ class TestConsumableQuerySetMethods(TestCase):
             },
             {
                 'result': [ *get_expires_in_order(2) ],
-                'expected': [ *self.get_queryset().filter(name__in=('milk', 'eggs')) ]
+                'expected': [ *self.filter_consumables(name__in=('milk', 'eggs')) ]
             },
             {
                 'result': [ *get_expires_in_order(3) ],
-                'expected': [ *self.get_queryset().filter(name__in=('milk', 'eggs', 'bread')) ]
+                'expected': [ *self.filter_consumables(name__in=('milk', 'eggs', 'bread')) ]
             }
         ]
 
@@ -121,12 +122,12 @@ class TestConsumableQuerySetMethods(TestCase):
             },
             {
                 'result': [ *get_expired_in_order(2) ],
-                'expected': [ *self.get_queryset().filter(name__in=('bread', 'eggs')).order_by(
+                'expected': [ *self.filter_consumables(name__in=('bread', 'eggs')).order_by(
                     '-expiry') ]
             },
             {
                 'result': [ *get_expired_in_order(3) ],
-                'expected': [ *self.get_queryset().filter(name__in=('bread', 'eggs', 'milk')).order_by('-expiry') ]
+                'expected': [ *self.filter_consumables(name__in=('bread', 'eggs', 'milk')).order_by('-expiry') ]
             }
         ]
 
