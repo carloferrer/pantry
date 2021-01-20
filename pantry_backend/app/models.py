@@ -23,6 +23,18 @@ class ConsumableQuerySet(models.QuerySet):
         converted_date = datetime.strptime(date, '%Y-%m-%d')
         return self.filter(expiry__lte=date)
 
+    def get_expires_in_order(self, item_count):
+        now = timezone.now().date()
+        not_expired = self.filter(expiry__gte=now)
+        expires_in_order = not_expired.order_by('expiry')
+        return expires_in_order[:item_count]
+
+    def get_expired_in_order(self, item_count):
+        now = timezone.now().date()
+        expired = self.filter(expiry__lte=now)
+        expired_in_order = expired.order_by('-expiry')
+        return expired_in_order[:item_count]
+
 
 class ConsumableManager(models.Manager):
     def get_queryset(self):

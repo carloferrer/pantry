@@ -85,3 +85,50 @@ class TestConsumableQuerySetMethods(TestCase):
 
         for test_assertion in test_assertions:
             self.assertEqual(test_assertion['result'], test_assertion['expected'])
+
+    @patch('django.utils.timezone.now')
+    def test_get_expires_in_order(self, mock_now):
+        mock_now.return_value = datetime(2021, 1, 1)
+        get_expires_in_order = self.get_queryset().get_expires_in_order
+
+        test_assertions = [
+            {
+                'result': [ *get_expires_in_order(1) ],
+                'expected': [ self.get_queryset().get(name='milk') ]
+            },
+            {
+                'result': [ *get_expires_in_order(2) ],
+                'expected': [ *self.get_queryset().filter(name__in=('milk', 'eggs')) ]
+            },
+            {
+                'result': [ *get_expires_in_order(3) ],
+                'expected': [ *self.get_queryset().filter(name__in=('milk', 'eggs', 'bread')) ]
+            }
+        ]
+
+        for test_assertion in test_assertions:
+            self.assertEqual(test_assertion['result'], test_assertion['expected'])
+
+    @patch('django.utils.timezone.now')
+    def test_get_expires_in_order(self, mock_now):
+        mock_now.return_value = datetime(2022, 1, 1)
+        get_expired_in_order = self.get_queryset().get_expired_in_order
+
+        test_assertions = [
+            {
+                'result': [ *get_expired_in_order(1) ],
+                'expected': [ self.get_queryset().get(name='bread') ]
+            },
+            {
+                'result': [ *get_expired_in_order(2) ],
+                'expected': [ *self.get_queryset().filter(name__in=('bread', 'eggs')).order_by(
+                    '-expiry') ]
+            },
+            {
+                'result': [ *get_expired_in_order(3) ],
+                'expected': [ *self.get_queryset().filter(name__in=('bread', 'eggs', 'milk')).order_by('-expiry') ]
+            }
+        ]
+
+        for test_assertion in test_assertions:
+            self.assertEqual(test_assertion['result'], test_assertion['expected'])
