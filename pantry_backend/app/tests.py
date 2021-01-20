@@ -29,6 +29,10 @@ class TestConsumableQuerySetMethods(TestCase):
     get_queryset = Consumable.consumables.get_queryset
     filter_consumables = get_queryset().filter
 
+    def assert_all_equal(self, test_assertions):
+        for test_assertion in test_assertions:
+            self.assertEqual(test_assertion['result'], test_assertion['expected'])
+
     def setUp(self):
         mock_consumables = [
             { 'name': 'milk', 'expiry': '2021-01-01' },
@@ -44,7 +48,7 @@ class TestConsumableQuerySetMethods(TestCase):
         mock_now.return_value = datetime(2021, 1, 1)
         get_expires_in_days = self.get_queryset().get_expires_in_days
 
-        test_assertions = [
+        self.assert_all_equal([
             {
                 'result': [ *get_expires_in_days(1) ],
                 'expected': [ self.get_queryset().get(name='milk')
@@ -58,17 +62,14 @@ class TestConsumableQuerySetMethods(TestCase):
                 'result': [ *get_expires_in_days(20) ],
                 'expected': [ *self.filter_consumables(name__in=('milk', 'eggs', 'bread')) ]
             }
-        ]
-
-        for test_assertion in test_assertions:
-            self.assertEqual(test_assertion['result'], test_assertion['expected'])
+        ])
 
     @patch('django.utils.timezone.now')
     def test_get_expires_by_date(self, mock_now):
         mock_now.return_value = datetime(2021, 1, 1)
         get_expires_by_date = self.get_queryset().get_expires_by_date
 
-        test_assertions = [
+        self.assert_all_equal([
             {
                 'result': [ *get_expires_by_date('2021-01-01') ],
                 'expected': [ self.get_queryset().get(name='milk')
@@ -82,17 +83,14 @@ class TestConsumableQuerySetMethods(TestCase):
                 'result': [ *get_expires_by_date('2021-01-21') ],
                 'expected': [ *self.filter_consumables(name__in=('milk', 'eggs', 'bread')) ]
             }
-        ]
-
-        for test_assertion in test_assertions:
-            self.assertEqual(test_assertion['result'], test_assertion['expected'])
+        ])
 
     @patch('django.utils.timezone.now')
     def test_get_expires_in_order(self, mock_now):
         mock_now.return_value = datetime(2021, 1, 1)
         get_expires_in_order = self.get_queryset().get_expires_in_order
 
-        test_assertions = [
+        self.assert_all_equal([
             {
                 'result': [ *get_expires_in_order(1) ],
                 'expected': [ self.get_queryset().get(name='milk') ]
@@ -105,17 +103,14 @@ class TestConsumableQuerySetMethods(TestCase):
                 'result': [ *get_expires_in_order(3) ],
                 'expected': [ *self.filter_consumables(name__in=('milk', 'eggs', 'bread')) ]
             }
-        ]
-
-        for test_assertion in test_assertions:
-            self.assertEqual(test_assertion['result'], test_assertion['expected'])
+        ])
 
     @patch('django.utils.timezone.now')
     def test_get_expires_in_order(self, mock_now):
         mock_now.return_value = datetime(2022, 1, 1)
         get_expired_in_order = self.get_queryset().get_expired_in_order
 
-        test_assertions = [
+        self.assert_all_equal([
             {
                 'result': [ *get_expired_in_order(1) ],
                 'expected': [ self.get_queryset().get(name='bread') ]
@@ -129,7 +124,4 @@ class TestConsumableQuerySetMethods(TestCase):
                 'result': [ *get_expired_in_order(3) ],
                 'expected': [ *self.filter_consumables(name__in=('bread', 'eggs', 'milk')).order_by('-expiry') ]
             }
-        ]
-
-        for test_assertion in test_assertions:
-            self.assertEqual(test_assertion['result'], test_assertion['expected'])
+        ])
